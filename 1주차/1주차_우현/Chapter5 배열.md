@@ -171,3 +171,4 @@ int[] arr6 = Arrays.copyOfRange(arr, 0, 7);  // arr2=[0,1,2,3,4,0,0]
 **배열의 정렬 - sort()**
 
 `Arrays.sort(arr);`
+
