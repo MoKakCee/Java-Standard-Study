@@ -164,6 +164,30 @@ try {
 
 이것은 예외를 처리한 후에 인위적으로 다시 발생시키는 방법을 통해서 가능한데, 이것을 ‘예외 되던지기’ 라고 한다.
 
+```java
+public class Main {
+    public static void main(String[] args) {
+
+        try {
+method1();
+        } catch (Exception e) {
+            System.out.println("main에서 예외 처리");
+        }
+
+    }
+
+    static void method1() throws Exception{
+        try{
+            throw new Exception();
+        } catch (Exception e) {
+            System.out.println("method1에서 예외 처리");
+            throw e;  //<- 여기서 던지는 예외 e는 catch(Exception e)가 아닌 메서드에 선언한(static void method1() throws Exception) 예외이다.
+        }
+    }
+
+}
+```
+
 ### 연결된 예외(chained exception)
 
 한 예외가 다른 예외를 발생시킬 수도 있다.
