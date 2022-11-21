@@ -181,7 +181,7 @@ method1();
             throw new Exception();
         } catch (Exception e) {
             System.out.println("method1에서 예외 처리");
-            throw e;  //<- 여기서 던지는 예외 e는 catch(Exception e)가 아닌 메서드에 선언한(static void method1() throws Exception) 예외이다.
+            throw e;  // 반드시 메서드에 예외를 선언해 주어야 한다.
         }
     }
 
