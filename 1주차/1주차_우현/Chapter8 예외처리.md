@@ -190,4 +190,30 @@ method1();
 
 ### 연결된 예외(chained exception)
 
-한 예외가 다른 예외를 발생시킬 수도 있다. 
+한 예외가 다른 예외를 발생시킬 수도 있다.
+
+예외 A가 예외 B를 발생시키면, A는 B의 원인 예외이다.
+
+**Throwable initCause(Throwable cause)** : 지정한 예외를 원인 예외로 등록
+
+**Throwable getCause()** : 원인 예외를 반환
+
+Throwable은 Exception의 부모클래스이다.
+
+```java
+void install() throws InstallException {  //중요! 감싼 예외만 던지면 된다.
+	try {
+				startInstall();  //SpaceException 발생
+				copyFiles();
+		} catch (SpaceException e) {
+				InstallException ie = new InstallException("설치중 예외발생");  //예외 발생
+				ie.initCause(e);  //InstallException의 원인 예외를 SpaceException으로 지정
+				throw ie;  //InstallException을 발생
+		} 
+}
+```
+
+사용이유
+
+1. 여러 예외를 하나로 묶어서 다루기 위해서
+2. checked예외를 unchecked예외로 변경하려 할때(RuntimeException의 원인예외로 등록하면 됨)
