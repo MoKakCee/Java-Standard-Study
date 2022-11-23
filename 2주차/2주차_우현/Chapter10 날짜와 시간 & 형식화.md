@@ -1,0 +1,278 @@
+# CHAPTER 10 날짜와 시간 & 형식화
+
+### 날짜와 시간
+
+Date: JDK1.0부터 제공된 클래스
+
+Calendar: JDK1.1부터 제공된 클래스(Date클래스 보완)
+
+java.time패키지: JDK1.8부터 기존의 단점들을 개선한 새로운 클래스 등장
+
+### Calendar클래스
+
+Calendar는 추상클래스로 직접 객체를 생성할 수 없다.
+
+```java
+Calendar cal = new Calendar();  //에러!!
+Calendar cal = Calendar.getInstance(); //getInstance()메서드는 Calendar클래스를 구현한 클래스의 인스턴스를 반환한다.
+```
+
+### Calendar클래스의 주요 상수
+
+| 상수 | 사용방법 | 설명 |
+| --- | --- | --- |
+| static int YEAR | Calendar.YEAR | 현재 년도 |
+| static int MONTH | Calendar.MONTH | 현재 월 (1월: 0) |
+| static int DATE | Calendar.DATE | 현재 월의 날짜 |
+| static int WEEK_OF_YEAR | Calendar.WEEK_OF_YEAR | 현재 년도의 몇째 주 |
+| static int WEEK_OF_MONTH | Calendar.WEEK_OF_MONTH | 현재 월의 몇째 주 |
+| static int DAY_OF_YEAR | Calendar.DAY_OF_YEAR | 현재 년도의 날짜 |
+| static int DAY_OF_MONTH | Calendar.DAY_OF_MONTH | 현재 월의 날짜 |
+| static int DAY_OF_WEEK | Calendar.DAY_OF_WEEK | 현재 요일(일요일:1 ,토요일: 7) |
+| static int HOUR | Calendar.HOUR | 현재 시간 (12시간제) |
+| static int HOUR_OF_DAY | Calendar.HOUR_OF_DAY | 현재 시간 (24시간제) |
+| static int MINUTE | Calendar.MINUTE | 현재 분 |
+| static int SECOND | Calendar.SECOND | 현재 초 |
+
+### Calendar 클래스의 주요 메서드
+
+| 메소드 | 설명 |
+| --- | --- |
+| static Calendar getInstance() | 현재 날짜와 시간 정보를 가진 Calendar 객체를 생성한다. |
+| boolean after(Object when) | when과 비교하여 현재 날짜 이후이면 true, 아니면 false를 반환한다. |
+| boolean before(Object when) | when과 비교하여 현재 날짜 이전이면 true, 아니면 false를 반환한다. |
+| boolean equals(Object obj) | 같은 날짜값인지 비교하여 true, false를 반환한다. |
+| int get(int field) | 현재 객체의 주어진 값의 필드에 해당하는 상수 값을 반환한다.이 상수값은 Calendar 클래스의 상수중에 가진다. |
+| Date getTime() | 현재의 객체를 Date 객체로 변환한다. |
+| long getTimeInMills() | 객체의 시간을 1/1000초 단위로 변경하여 반환한다. |
+| void set(int field, int value) | 현재 객체의 특정 필드를 다른 값으로 설정한다. |
+| void set(int year, int month, int date) | 현재 객체의 년, 월, 일 값을 다른 값으로 설정한다. |
+| void set(int year, int month, int date, int hour, int minute, int second) | 현재 객체의 년, 월, 일, 시, 분, 초 값을 다른 값으로 설정한다. |
+| void setTime(Date date) | date 객체의 날짜와 시간 정보를 현재 객체로 생성한다. |
+| void setTimeInMills(long mills) | 현재 객체를 1/1000초 단위의 주어진 매개변수 시간으로 설정한다. |
+| int getActualMinimum(int field) | 현재 객체의 특정 필드의 최소 값을 반환한다. |
+| int getActualMaximum(int field) | 현재 객체의 특정 필드의 최대 값을 반환한다. |
+| void add(int field, int amount) | 월, 일, 요일 중 원하는 필드값을 지정한 숫자만큼 증가 또는 감소한다. |
+
+### Date와 Calendar간의 변환
+
+Calendar가 새로 추가되면서 Date는 대부분의 메서드가 ‘deprecated’되었다.
+
+```java
+1. Calendar를 Date로 변환
+	Calendar cal = Calendar.getInstance();
+	Date d = new Date(cal.getTimeInMillis());  //Date(long date)
+
+2. Date를 Calendar로 변환
+	Date d = new Date();
+	Calendar cal = Calendar.getInstance();
+	cal.setTime(d);
+```
+
+### 형식화 클래스
+
+java.text패키지에 포함되어 있으며 숫자, 날짜, 텍스트 데이터를 일정한 형식에 맞게 표현할 수 있는 방법을 객체지향적으로 설계하여 표준화한 것
+
+**DecimalFormat**
+
+형식화 클래스 중에서 숫자를 형식화 하는데 사용되는 것.
+
+숫자 데이터를 정수, 부동소수점, 금액 등의 다양한 형식으로 표현할 수 있다.
+
+반대로 일정한 형식의 텍스트 데이터를 숫자로 쉽게 변환하는 것도 가능하다.
+
+```java
+double number = 1234567.89;
+DecimalFormat df = new DecimalFormat("#.#E0");  //<- 원하는 포맷팅 패턴
+String result = df.format(number);  //포맷팅할 숫자 데이터
+
+--> result = "1.2E6"
+```
+
+| 패턴 | 의미 | 예 |
+| --- | --- | --- |
+| 0 | 10진수, 빈자리는 0으로 채운다. | 0, 0.0, 000.000 |
+| # | 10진수, 빈자리는 채우지 않는다. | #, #.##, ####.### |
+| . | 소수점 표시 | ###.##, ###.00, 00.00 |
+| , | 단위 구분 기호 표시 | #,##.# |
+| +, - | 음수, 양수 표시 | +#.##, -#.## |
+| E | 지수 문자 | 0.0#00 |
+| ; | 양수와 음수 패턴을 모두 사용할 경우 패턴 구분자 | +#.##;-#.## |
+| % | 100을 곱하고 %를 붙인다. | #.###% |
+| \u00A4 | 통화 표시 \을 붙인다. | \u00A4####.## |
+
+**기호와 문자가 포함된 String** **데이터를 숫자로 변환하기**
+
+```java
+DecimalFormat df = new DecimalFormat("#,###.##");
+Number num = df.parse("1,234,567.89");  //Number : 래퍼클래스(Integer, Double...)의 최고 부모클래스
+--> 1234567.89
+```
+
+**SimpleDateFormat**
+
+Date와 Calendar만으로 날짜 데이터를 원하는 형태로 출력하는 것은 불편.
+
+SimpleDateFormat 을 사용하여 해결
+
+```java
+Date today = new Date();
+SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+String result = df.format(today);
+```
+
+| 문자 | 날짜 및 시간 요소 | 표시 | 예제 |
+| --- | --- | --- | --- |
+| G | Era designator | Text | AD |
+| y | Year | Year | 1996; 96 |
+| Y | Week year | Year | 2009; 09 |
+| M | Month in year (context sensitive) | Month | July; Jul; 07 |
+| L | Month in year (standalone form) | Month | July; Jul; 07 |
+| w | Week in year | Number | 27 |
+| W | Week in month | Number | 2 |
+| D | Day in year | Number | 189 |
+| d | Day in month | Number | 10 |
+| F | Day of week in month | Number | 2 |
+| E | Day name in week | Text | Tuesday; Tue |
+| u | Day number of week (1 = Monday, ..., 7 = Sunday) | Number | 1 |
+| a | Am/pm marker | Text | PM |
+| H | Hour in day (0-23) | Number | 0 |
+| k | Hour in day (1-24) | Number | 24 |
+| K | Hour in am/pm (0-11) | Number | 0 |
+| h | Hour in am/pm (1-12) | Number | 12 |
+| m | Minute in hour | Number | 30 |
+| s | Second in minute | Number | 55 |
+| S | Millisecond | Number | 978 |
+| z | Time zone | General time zone | Pacific Standard Time; PST; GMT-08:00 |
+| Z | Time zone | RFC 822 time zone | -0800 |
+| X | Time zone | ISO 8601 time zone | -08; -0800; -08:00 |
+
+---
+
+네이버 d2게시글 ‘Java의 날짜와 시간 API’ [https://d2.naver.com/helloworld/645609](https://d2.naver.com/helloworld/645609) 참고
+
+### Calendar, Date클래스의 문제점
+
+1. **불변객체가 아니다.**
+    
+    set으로 시간을 변경할 수 있다.
+    
+2. **int 상수필드 남용** 
+    
+    Calendar를 사용한 날짜 연산은 int 상수 필드를 사용한다.
+    
+    `calendar.add(Calendar.SECOND, 2);`
+    
+    엉뚱한 상수가 들어가도 컴파일 시점에서 확일할 방법이 없다.
+    
+3. **헷갈리는 월 지정**
+    
+    Date, Calendar클래스는 1월을 0으로 표현한다.
+    
+4. **일관성 없는 요일 상수**
+    
+    Calendar.get() 함수에서 반환하는 요일은 int값으로, 일요일이 1로 표현
+    
+    calendar.getTime()메서드로 Date객체를 얻어와서 Date.getDay()메서드로 요일을 구하면 일요일은 0으로 표현
+    
+5. **Date와 Calendar 객체의 역할 분담**
+6. **오류에 둔감한 시간대 ID지정**
+    
+    `TimeZone.getTimeZone(”Seoul.Asia”);` ← “Asis/Seoul”이 맞는 코드지만 오류를 잡아내지 못한다.
+    
+7. **기타 java.util.Date 하위 클래스의 문제**
+    
+    java.sql.Date와 클래스 이름이 같다.
+    
+
+이러한 문제들로 개발자들은 자바API를 사용하지 않고 오픈 소스 라이브러리인 joda.time을 사용하다가 이에 영향을 받은 java.time패키지가 등장하였다.
+
+### java.time 패키지
+
+JDK 1.8부터 추가된 날짜와 시간 API
+
+### LocalDate
+
+날짜를 표현하는 클래스
+
+```java
+LocalDate currentDate = LocalDate.now();
+LocalDate targetDate = LocalDate.of(int year, int month, int dayOfMonth);
+```
+
+```java
+//LocalDate date = LocalDate.now();
+
+LocalDate date = LocalDate.of(2022, 9, 29);
+System.out.println(date);
+
+int year = date.getYear();      //년
+Month month = date.getMonth();  //Month 열거 값(JANUARY, FEBRUARY, MARCH ...)
+int monthValue = date.getMonthValue();  //월(1,2,3...)
+int dayOfMonth = date.getDayOfMonth();  //월의 몇 번째 일
+DayOfWeek dayOfWeek = date.getDayOfWeek();  //요일(MONDAY, TUESDAY, WEDNESDAY...)
+boolean leapYear = date.isLeapYear();   //윤년여부
+```
+
+### LocalTime
+
+시간을 표현하는 클래스
+
+```java
+LocalTime currentTime = LocalTime.now();
+LocalTime targetTime = LocalTime.of(int hour, int minute, int second, int nanoOfSecond);
+```
+
+```java
+//LocalTime time = LocalTime.now();
+
+LocalTime time = LocalTime.of(13, 30, 0, 0);
+int hour = time.getHour();      //시간
+int minute = time.getMinute();  //분
+int second = time.getSecond();  //초
+int nano = time.getNano();      //나노초
+```
+
+### LocalDateTime
+
+LocalDate + LocalTime
+
+```java
+LocalDateTime currentDateTime = LcoalDateTime.now();
+LocalDateTime targetDateTime = LcoalDateTime.now(ZoneId.of("Asia/Seoul"));
+```
+
+### ZoneDateTime
+
+ISO-8601 달력 시스템에서 정의하고 있는 타임존의 날짜와 시간을 저장하는 클래스. 타임존까지 출력
+
+```java
+ZonedDateTime utcDateTime = ZonedDateTime.now(ZoneId.of("UTC"));
+ZonedDateTime seoulDateTime = ZonedDateTime.now(ZoneId.of("Asua/Seoul"));
+```
+
+### LocalDateTime → String 변환
+
+```java
+LocalDateTime localDateTime = LocalDateTime.of(2022, 11, 22, 11, 0);
+
+//정해진 패턴으로 변환하기
+String format = localDateTime.format(DateTimeFormatter.BASIC_ISO_DATE); //상수로 다양한 패턴 지원
+System.out.println(format);
+
+//커스텀 패턴
+String custom = localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+System.out.println(custom);
+```
+
+### String→ LocalDate, LocalDateTime 변환
+
+```java
+//String -> LocalDate
+LocalDate parse = LocalDate.parse("2022-11-22");
+LocalDate parse1 = LocalDate.parse("20221122", DateTimeFormatter.BASIC_ISO_DATE);
+
+//String -> LocalDateTime
+LocalDateTime parse2 = LocalDateTime.parse("2007-12-03T10:15:30");
+LocalDateTime parse3 = LocalDateTime.parse("2022-11-25 12:30:10", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+```
